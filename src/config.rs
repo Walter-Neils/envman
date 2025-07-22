@@ -7,7 +7,9 @@ use serde::{Deserialize, Serialize};
 pub enum EnvironmentVariable {
     // Clears the environment variable
     Clear,
-    String(String),
+    // Overrides the environment variable with a new value, replacing any existing value
+    Override(String),
+    // Manages variables which represent some form of list, such as PATH or LD_LIBRARY_PATH
     StringList(StringList),
     // Represents a variable that MUST have a value, but may not be set in the configuration
     Required,
@@ -22,11 +24,20 @@ pub enum StringListMode {
     Replace,
 }
 
+#[derive(Serialize, Deserialize, PartialEq, Clone)]
+pub enum StringListBehavior {
+    RemoveDuplicates,
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct StringList {
-    pub items: Vec<String>,
+    // The additional items to add to the list
+    pub additional_items: Vec<String>,
+    // Values that should be discarded from the list
+    pub discarded_items: Option<Vec<String>>,
     pub delimiter: String,
-    pub mode: StringListMode,
+    pub insert_mode: StringListMode,
+    pub additional_behavior: Option<Vec<StringListBehavior>>,
 }
 
 #[derive(Serialize, Deserialize)]

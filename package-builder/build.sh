@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -r build
 mkdir build
 cargo build --release
 cp ../target/release/envman ./build/

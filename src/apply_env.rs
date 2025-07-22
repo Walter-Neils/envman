@@ -14,7 +14,7 @@ pub fn apply_env<'a>(environments: Vec<&'a Environment>) -> Result<HashMap<Strin
                 config::EnvironmentVariable::Clear => {
                     env_map.remove(variable_key);
                 }
-                config::EnvironmentVariable::String(value) => {
+                config::EnvironmentVariable::Override(value) => {
                     env_map.insert(variable_key.to_string(), value.clone());
                 }
                 config::EnvironmentVariable::StringList(list) => {
@@ -26,17 +26,27 @@ pub fn apply_env<'a>(environments: Vec<&'a Environment>) -> Result<HashMap<Strin
                             values.push(s.to_string());
                         }
                     });
-                    match list.mode {
+                    if let Some(ref discarded_items) = list.discarded_items {
+                        values.retain(|v| !discarded_items.contains(v));
+                    }
+                    match list.insert_mode {
                         config::StringListMode::Append => {
-                            values.extend(list.items.iter().cloned());
+                            values.extend(list.additional_items.iter().cloned());
                         }
                         config::StringListMode::Prepend => {
-                            let mut new_values = list.items.clone();
+                            let mut new_values = list.additional_items.clone();
                             new_values.extend(values);
                             values = new_values;
                         }
                         config::StringListMode::Replace => {
-                            values = list.items.clone();
+                            values = list.additional_items.clone();
+                        }
+                    }
+
+                    if let Some(ref behavior) = list.additional_behavior {
+                        if behavior.contains(&config::StringListBehavior::RemoveDuplicates) {
+                            values.sort();
+                            values.dedup();
                         }
                     }
 
@@ -64,4 +74,3 @@ pub fn apply_env<'a>(environments: Vec<&'a Environment>) -> Result<HashMap<Strin
     }
     Ok(env_map)
 }
-

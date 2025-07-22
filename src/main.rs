@@ -34,10 +34,10 @@ fn main() -> Result<()> {
         if let Some(env) = config.environments.get(target) {
             environments.push(env);
         } else {
-            eprintln!(
-                "Warning: Environment '{}' not found in configuration.",
+            return Err(anyhow::anyhow!(
+                "Attempted to reference environment '{}', but no such environment exists in the configuration.",
                 target
-            );
+            ));
         }
     }
     let environment = apply_env(environments)
