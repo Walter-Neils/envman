@@ -1,0 +1,12 @@
+pkgname="envman"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdec="Manage environments in a declarative way"
+arch=("x86_64")
+source=("envman")
+sha512sums=("SKIP")
+package() {
+  mkdir -p "${pkgdir}/usr/bin"
+  cp "${srcdir}/envman" "${pkgdir}/usr/bin/envman"
+  chmod +x "${pkgdir}/usr/bin/envman"
+}
