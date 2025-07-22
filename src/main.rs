@@ -1,19 +1,13 @@
 #![feature(iter_intersperse)]
-use std::collections::HashMap;
-
 use crate::{
-    apply_env::apply_env,
-    command_line_info::get_command_line_info,
-    config::{ConfigurationFile, Environment, StringList, load_config_file},
-    execute::execute,
-    help::show_help,
+    apply_env::apply_env, command_line_info::get_command_line_info, config::load_config_file,
+    execute::execute, help::show_help,
 };
 use anyhow::Result;
 
 mod apply_env;
 mod command_line_info;
 mod config;
-mod environment;
 mod execute;
 mod help;
 

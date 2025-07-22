@@ -1,6 +1,9 @@
 use anyhow::Result;
 use std::collections::HashMap;
 
+// Executes a command with the specified executable, arguments, and environment variables.
+// The environment is absolute, which means the executable's environment is strictly defined by
+// the provided environment map, and any existing environment variables are cleared before execution.
 pub fn execute(
     executable: &str,
     args: &[String],
